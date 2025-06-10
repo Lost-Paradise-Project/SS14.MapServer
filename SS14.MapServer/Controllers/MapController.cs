@@ -190,11 +190,11 @@ public class MapController : ControllerBase
 
     [HttpPost("sync")]
     [Consumes("application/json")]
-    public async Task<IActionResult> SyncMaps(List<string>? mapFileNames, bool syncAll, bool forceTiled)
+    public async Task<IActionResult> SyncMaps(List<string>? mapFilePaths, bool syncAll, bool forceTiled)
     {
         var data = new JobDataMap
         {
-            {Jobs.SyncMaps.MapListKey, mapFileNames ?? new List<string>() },
+            {Jobs.SyncMaps.MapListKey, mapFilePaths ?? new List<string>() },
             {Jobs.SyncMaps.SyncAllKey, syncAll},
             {Jobs.SyncMaps.ForceTiledKey, forceTiled}
         };

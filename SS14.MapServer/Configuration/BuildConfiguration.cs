@@ -12,7 +12,6 @@ public sealed class BuildConfiguration
     public string MapRendererOptionsString { get; set; } = "--format webp --viewer -f";
     public int ProcessTimeoutMinutes { get; set; } = 10;
     public string RelativeMapFilesPath { get; set; } = "Resources/MapImages";
-    public string RelativeResourcePath { get; set; } = "Resources";
     public string MapDataFileName { get; set; } = "map.json";
     public bool CleanMapFolderAfterImport { get; set; } = true;
 }

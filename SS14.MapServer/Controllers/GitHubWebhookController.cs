@@ -94,7 +94,7 @@ public class GitHubWebhookController : ControllerBase
             $"{headCommit.User.Login}:{headCommit.Ref}"
             );
 
-        var files = enumerable.Select(file => Path.GetRelativePath(_buildConfiguration.RelativeResourcePath, file)).ToList();
+        var files = enumerable.Select(Path.GetFileName).ToList();
 
         if (files.Count == 0)
             return;
@@ -143,7 +143,7 @@ public class GitHubWebhookController : ControllerBase
             payload.Before,
             payload.After);
 
-        var files = enumerable.Select(file => Path.GetRelativePath(_buildConfiguration.RelativeResourcePath, file)).ToList();
+        var files = enumerable.Select(Path.GetFileName).ToList();
 
         if (files.Count == 0)
             return;

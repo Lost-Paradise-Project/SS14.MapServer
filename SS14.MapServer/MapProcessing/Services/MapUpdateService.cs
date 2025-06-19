@@ -73,7 +73,7 @@ public sealed class MapUpdateService
             if (!mapFileMatchResult.HasMatches)
                 return new MapProcessResult(strippedGitRef, ImmutableList<Guid>.Empty);
 
-            maps = mapFileMatchResult.Files.Select(file => Path.GetRelativePath(_buildConfiguration.RelativeResourcePath, file.Path));
+            maps = mapFileMatchResult.Files.Select(file => Path.GetFileName(file.Path));
         }
 
         var command = Path.Join(

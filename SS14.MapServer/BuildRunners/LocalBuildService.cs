@@ -146,7 +146,10 @@ public sealed partial class LocalBuildService
     private void ProcessLocalBuildException(string log, string fileName, Exception exception)
     {
         if (!SentrySdk.IsEnabled)
+        {
+            _log.Error("Build error detected. Log:\n{Log}", log);
             throw exception;
+        }
 
         var data = Encoding.UTF8.GetBytes(log);
         SentrySdk.CaptureException(exception,

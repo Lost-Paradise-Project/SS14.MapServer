@@ -69,7 +69,7 @@ public sealed partial class LocalBuildService
 
         if (process.ExitCode != 0)
         {
-            var exception = new BuildException($"Failed building {_configuration.MapRendererProjectName}");
+            var exception = new BuildException($"Failed building {_configuration.MapRendererProjectName} using exit code {process.ExitCode}");
             ProcessLocalBuildException(logBuffer.ToString(), "build.log", exception);
         }
 
@@ -114,11 +114,10 @@ public sealed partial class LocalBuildService
         }
 
         var log = logBuffer.ToString();
-        // Bandaid the fact that the map renderer doesn't return an error code when rendering fails
 
-        if (process.ExitCode != 0 || LogErrorRegex().IsMatch(log))
+        if (process.ExitCode != 0)
         {
-            var exception = new BuildException($"Error while running: {command} {string.Join(' ', arguments)}");
+            var exception = new BuildException($"Error while running: {command} {string.Join(' ', arguments)} with exit code {process.ExitCode}.");
             ProcessLocalBuildException(log, "run.log", exception);
         }
 

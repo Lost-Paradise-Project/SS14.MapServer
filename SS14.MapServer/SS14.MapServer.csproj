@@ -1,76 +1,76 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-        <Version>1.1.12</Version>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <Version>1.1.11</Version>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Docker.DotNet" Version="3.125.15" />
-        <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
-        <PackageReference Include="JsonModelBinder" Version="2.1.1" />
-        
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
-        <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="10.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="10.0.0" />
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
+  <ItemGroup>
+    <PackageReference Include="Docker.DotNet" Version="3.125.15" />
+    <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
+    <PackageReference Include="JsonModelBinder" Version="2.1.1" />
 
-        <PackageReference Include="MimeTypeMapOfficial" Version="1.0.17" />
-        <PackageReference Include="NetEscapades.Configuration.Yaml" Version="3.1.0" />
-        
-        <PackageReference Include="Npgsql" Version="10.0.0" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
-        
-        <PackageReference Include="Octokit" Version="14.0.0" />
-        <PackageReference Include="Quartz.AspNetCore" Version="3.14.0" />
-        <PackageReference Include="Sentry.AspNetCore" Version="5.5.0" />
-        <PackageReference Include="Sentry.Serilog" Version="5.5.0" />
-        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.7" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="8.1.0" />
-    </ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="10.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.0" />
+    <PackageReference Include="Microsoft.OpenApi" Version="1.6.22" />
 
-    <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-      <Content Remove="data\**" />
-    </ItemGroup>
+    <PackageReference Include="MimeTypeMapOfficial" Version="1.0.17" />
+    <PackageReference Include="NetEscapades.Configuration.Yaml" Version="3.1.0" />
 
-    <ItemGroup>
-      <Compile Remove="data\**" />
-    </ItemGroup>
+    <PackageReference Include="Npgsql" Version="10.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
 
-    <ItemGroup>
-      <EmbeddedResource Remove="data\**" />
-    </ItemGroup>
+    <PackageReference Include="Octokit" Version="14.0.0" />
+    <PackageReference Include="Quartz.AspNetCore" Version="3.14.0" />
+    <PackageReference Include="Sentry.AspNetCore" Version="5.5.0" />
+    <PackageReference Include="Sentry.Serilog" Version="5.5.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.7" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="7.2.0" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <None Remove="data\**" />
-    </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
+    <Content Remove="data\**" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <Content Include="Resources\**\*">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="data\**" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="data\**" />
-    </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="data\**" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\SS14.GithubApiHelper\SS14.GithubApiHelper.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <None Remove="data\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="data\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SS14.GithubApiHelper\SS14.GithubApiHelper.csproj" />
+  </ItemGroup>
 
 </Project>

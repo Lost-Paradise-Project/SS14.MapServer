@@ -27,3 +27,6 @@ Server:
 
 Git:
     Branch: "master"
+
+Build:
+    MapRendererCommand: "Content.MapRenderer.exe"

@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Interfaces;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace SS14.MapServer.Helpers;

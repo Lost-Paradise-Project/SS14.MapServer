@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.Extensions.FileSystemGlobbing;
+using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 using SS14.MapServer.BuildRunners;
 using SS14.MapServer.Configuration;
 using SS14.MapServer.Services;
@@ -59,21 +60,17 @@ public sealed class MapUpdateService
 
         if (syncAll)
         {
-            var files = _gitConfiguration.MapFilePatterns
-                .Select(pattern => Directory.GetFiles(workingDirectory, pattern))
-                .SelectMany(x => x)
-                .Select(file => Path.GetRelativePath(workingDirectory, file));
+            var matcher = new Matcher();
+            matcher.AddIncludePatterns(_gitConfiguration.MapFilePatterns);
+            matcher.AddExcludePatterns(_gitConfiguration.MapFileExcludePatterns);
 
-            //Check for map files
-            var mapFileMatcher = new Matcher();
-            mapFileMatcher.AddIncludePatterns(_gitConfiguration.MapFilePatterns);
-            mapFileMatcher.AddExcludePatterns(_gitConfiguration.MapFileExcludePatterns);
-            var mapFileMatchResult = mapFileMatcher.Match(files);
+            var dirInfo = new DirectoryInfo(workingDirectory);
+            var result = matcher.Execute(new DirectoryInfoWrapper(dirInfo));
 
-            if (!mapFileMatchResult.HasMatches)
+            if (!result.HasMatches)
                 return new MapProcessResult(strippedGitRef, ImmutableList<Guid>.Empty);
 
-            maps = mapFileMatchResult.Files.Select(file => Path.GetFileName(file.Path));
+            maps = result.Files.Select(file => Path.GetFileName(file.Path));
         }
 
         var command = Path.Join(

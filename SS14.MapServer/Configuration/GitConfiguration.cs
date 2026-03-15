@@ -22,7 +22,7 @@ public sealed class GitConfiguration
     /// </summary>
     public List<string> MapFilePatterns { get; set; } = new()
     {
-        "Resources/Maps/_LP/*.yml"
+        "Resources/Maps/_LP/**/*.yml"
     };
 
     /// <summary>

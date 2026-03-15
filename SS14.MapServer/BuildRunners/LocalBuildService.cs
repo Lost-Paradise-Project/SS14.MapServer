@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Sentry;
@@ -49,6 +50,7 @@ public sealed partial class LocalBuildService
 
         var logBuffer = new StringBuilder();
         process.OutputDataReceived += (_, args) => LogOutput(logBuffer, args);
+        process.ErrorDataReceived += (_, args) => LogOutput(logBuffer, args);
 
         _log.Information("Started building {ProjectName}", _configuration.MapRendererProjectName);
 
@@ -57,8 +59,9 @@ public sealed partial class LocalBuildService
         try
         {
             process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
             await process.WaitForExitAsync(cancellationToken).WaitAsync(TimeSpan.FromMinutes(_configuration.ProcessTimeoutMinutes), cancellationToken);
-            process.CancelOutputRead();
+            process.WaitForExit();
         }
         catch (OperationCanceledException)
         {
@@ -69,8 +72,9 @@ public sealed partial class LocalBuildService
 
         if (process.ExitCode != 0)
         {
-            var exception = new BuildException($"Failed building {_configuration.MapRendererProjectName} using exit code {process.ExitCode}");
-            ProcessLocalBuildException(logBuffer.ToString(), "build.log", exception);
+            var log = logBuffer.ToString();
+            var exception = new BuildException($"Failed building {_configuration.MapRendererProjectName} using exit code {process.ExitCode}\n{GetLogTail(log)}");
+            ProcessLocalBuildException(log, "build.log", exception);
         }
 
         _log.Information("Build finished");
@@ -93,17 +97,13 @@ public sealed partial class LocalBuildService
 
         process.Start();
 
-        if (process.HasExited)
-            throw new BuildException($"Run timed out {_configuration.MapRendererProjectName}");
-
         try
         {
             process.BeginErrorReadLine();
             process.BeginOutputReadLine();
             await process.WaitForExitAsync(cancellationToken)
                 .WaitAsync(TimeSpan.FromMinutes(_configuration.ProcessTimeoutMinutes), cancellationToken);
-            process.CancelErrorRead();
-            process.CancelOutputRead();
+            process.WaitForExit();
         }
         catch (OperationCanceledException)
         {
@@ -117,7 +117,7 @@ public sealed partial class LocalBuildService
 
         if (process.ExitCode != 0)
         {
-            var exception = new BuildException($"Error while running: {command} {string.Join(' ', arguments)} with exit code {process.ExitCode}.");
+            var exception = new BuildException($"Error while running: {command} {string.Join(' ', arguments)} with exit code {process.ExitCode}.\n{GetLogTail(log)}");
             ProcessLocalBuildException(log, "run.log", exception);
         }
 
@@ -144,19 +144,30 @@ public sealed partial class LocalBuildService
 
     private void ProcessLocalBuildException(string log, string fileName, Exception exception)
     {
-        if (!SentrySdk.IsEnabled)
+        if (SentrySdk.IsEnabled)
+        {
+            var data = Encoding.UTF8.GetBytes(log);
+            SentrySdk.CaptureException(exception,
+                scope =>
+                {
+                    scope.AddAttachment(data, fileName, AttachmentType.Default, "text/plain");
+                });
+        }
+        else
         {
             _log.Error("Build error detected. Log:\n{Log}", log);
-            throw exception;
         }
 
-        var data = Encoding.UTF8.GetBytes(log);
-        SentrySdk.CaptureException(exception,
-            scope =>
-            {
+        throw exception;
+    }
 
-                scope.AddAttachment(data, fileName, AttachmentType.Default, "text/plain");
-            });
+    private string GetLogTail(string log, int lines = 20)
+    {
+        var split = log.Split('\n');
+        if (split.Length <= lines)
+            return log;
+
+        return string.Join('\n', split.TakeLast(lines));
     }
 
     [GeneratedRegex("error?|exception|fatal")]
